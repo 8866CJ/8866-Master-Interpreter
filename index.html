@@ -1,21 +1,25 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Master App</title>
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <div id="inputSection" class="container">
-            <h2>Master App</h2>
-            <p>Enter the scanned data string below:</p>
-            <input type="text" id="dataInput" placeholder="Paste data string here">
-            <button onclick="interpretData()">Interpret</button>
-        </div>
-    
-        <div id="output"></div>
-    
-        <script src="script.js"></script>
-    </body>
-    </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master App</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include the html5-qrcode library -->
+    <script src="html5-qrcode.min.js"></script>
+</head>
+<body>
+    <div id="inputSection" class="container">
+        <h2>Master App</h2>
+        <p>Enter the scanned data string below:</p>
+        <input type="text" id="dataInput" placeholder="Paste data string here">
+        <button onclick="interpretData()">Interpret</button>
+        <button id="startScannerButton">Start QR Scanner</button>
+    </div>
+
+    <div id="qr-reader" class="hidden"></div>
+    <div id="output"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
