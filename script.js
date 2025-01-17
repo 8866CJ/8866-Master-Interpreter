@@ -168,3 +168,30 @@ function exportToCSV() {
     link.click();
     document.body.removeChild(link);
 }
+
+// QR code scanning functionality
+document.addEventListener('DOMContentLoaded', function () {
+    const startScannerButton = document.getElementById('startScannerButton');
+    let qrScanner;
+
+    startScannerButton.addEventListener('click', function() {
+        document.getElementById('qr-reader').classList.remove('hidden');
+        this.style.display = 'none';
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Close the scanner after a successful scan
+            qrScanner.clear();
+            document.getElementById('qr-reader').classList.add('hidden');
+            console.log(`Code matched = ${decodedText}`, decodedResult);
+            document.getElementById('dataInput').value = decodedText;
+            interpretData();
+        }
+
+        // Create an instance of Html5QrcodeScanner with the ID of the HTML element
+        qrScanner = new Html5QrcodeScanner(
+            "qr-reader", { fps: 10, qrbox: 300 });
+
+        // Start scanning
+        qrScanner.render(onScanSuccess);
+    });
+});
