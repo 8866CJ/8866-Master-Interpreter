@@ -3,7 +3,7 @@
 
 ## Overview
 
-The 8866 Master Interpreter is a project designed to interpret and execute specific tasks using JavaScript, CSS, and HTML. This application leverages Electron for building cross-platform desktop applications.
+The 8866 Master Interpreter is a project designed to take data from a qr code generated with a specific data format from the 8866 Scouting App then interpret the data as scoring data for the FIRST Robotics Challenge game REEFSCAPE for the 2025 season.
 
 ## Features
 
