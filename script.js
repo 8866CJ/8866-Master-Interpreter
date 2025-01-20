@@ -141,29 +141,8 @@ function exportToCSV() {
     const matchType = values[22] == "qualification" ? "Qualification" : "Playoffs";
     const scouterName = values[23];
 
-    // Match details section
-    csvContent += "\n,,,,,,,Scouter Name\r\n";
-    csvContent += `,,,,,,,${scouterName}\r\n`;
-    csvContent += "\n,,,,,,,Match Type\r\n";
-    csvContent += `,,,,,,,${matchType}\r\n`;
-    csvContent += "\n,,,,,,,Match Details\r\n";
-    csvContent += ",,Won Match,,Lost Match,,Tied Match,,Match Number,,Team Number,,Alliance Color\r\n";
-    csvContent += `,,${values[16] == 1 ? "Yes" : "No"},,${values[17] == 1 ? "Yes" : "No"},,${values[18] == 1 ? "Yes" : "No"},,${matchNumber},,${teamNumber},,${allianceColor}\r\n`;
-
-    // Autonomous phase section
-    csvContent += "\n,,,,,,,Autonomous Phase\r\n";
-    csvContent += "\n,Coral L1,,Coral L2,,Coral L3,,Coral L4,,Algae Processor,,Algae Net,,Left During Autonomous\r\n";
-    csvContent += `,${values[0]},,${values[1]},,${values[2]},,${values[3]},,${values[4]},,${values[5]},,${values[6] == 3 ? "Yes" : "No"}\r\n`;
-
-    // Teleop phase section
-    csvContent += "\n,,,,,,,Teleop Phase\r\n";
-    csvContent += "\n,,Coral L1,,Coral L2,,Coral L3,,Coral L4,,Algae Processor,,Algae Net\r\n";
-    csvContent += `,${values[7]},,${values[8]},,${values[9]},,${values[10]},,${values[11]},,${values[12]}\r\n`;
-
-    // End game section
-    csvContent += "\n,,,,,,,End Game\r\n";
-    csvContent += "\n,,,,Parked,,Deep,,Shallow,,Total Score\r\n";
-    csvContent += `,,,,${values[13] == 2 ? "Yes" : "No"},,${values[14] == 12 ? "Yes" : "No"},,${values[15] == 6 ? "Yes" : "No"},,${totalScore}\r\n`;
+    csvContent += "Scout Data,Name,Match Type,Team,Alliance,Autonomous,Leave,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,Teleoperated,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,End Game,Parked,Deep,Shallow,Total Score\r\n";
+    csvContent += `Match ${matchNumber},${scouterName},${matchType},${teamNumber},${allianceColor},,${values[6] == 3 ? "Yes" : "No"},${values[0] / 3},${values[1] / 4},${values[2] / 6},${values[3] / 7},${values[4] / 6},${values[5] / 4},,${values[7] / 2},${values[8] / 3},${values[9] / 4},${values[10] / 5},${values[4] / 6},${values[5] / 4},,${values[13] == 2 ? "Yes" : "No"},${values[14] == 12 ? "Yes" : "No"},${values[15] == 6 ? "Yes" : "No"},${totalScore}\r\n`;
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
