@@ -1,4 +1,81 @@
 let totalScore = 0;
+let importedCSVContent = "";
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("inputSection").classList.add("hidden");
+    document.getElementById("fileInput").addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (file && file.name === "MasterSheet.csv") {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                importedCSVContent = e.target.result;
+                document.getElementById("inputSection").classList.remove("hidden");
+                document.getElementById("uploadSection").classList.add("hidden");
+            };
+            reader.readAsText(file);
+        } else {
+            alert("Please upload a file named MasterSheet.csv");
+        }
+    });
+});
+
+function exportToCSV() {
+    let csvContent = importedCSVContent.trim();
+
+    const inputData = document.getElementById("dataInput").value;
+    const values = inputData.split(",");
+
+    if (values.length < 23) {
+        alert("Invalid data format.");
+        return;
+    }
+
+    const autonomousPoints = [
+        { value: values[0], points: 3 },
+        { value: values[1], points: 4 },
+        { value: values[2], points: 6 },
+        { value: values[3], points: 7 },
+        { value: values[4], points: 6 },
+        { value: values[5], points: 4 },
+        { value: values[6] == 3 ? 3 : 0, points: 1 }
+    ];
+
+    const teleopPoints = [
+        { value: values[7], points: 2 },
+        { value: values[8], points: 3 },
+        { value: values[9], points: 4 },
+        { value: values[10], points: 5 },
+        { value: values[11], points: 6 },
+        { value: values[12], points: 4 }
+    ];
+
+    const endGamePoints = [
+        { value: values[13] == 2 ? 2 : 0, points: 1 },
+        { value: values[14] == 12 ? 12 : 0, points: 1 },
+        { value: values[15] == 6 ? 6 : 0, points: 1 }
+    ];
+
+    let totalScore = 0;
+    autonomousPoints.forEach(item => totalScore += parseInt(item.value));
+    teleopPoints.forEach(item => totalScore += parseInt(item.value));
+    endGamePoints.forEach(item => totalScore += parseInt(item.value));
+
+    const matchNumber = values[19];
+    const teamNumber = values[20];
+    const allianceColor = values[21] == 0 ? "Red" : "Blue";
+    const matchType = values[22] == "qualification" ? "Qualification" : "Playoffs";
+    const scouterName = values[23];
+    
+    csvContent += `\nMatch ${matchNumber},${scouterName},${matchType},${teamNumber},${allianceColor},,${values[6] == 3 ? "Yes" : "No"},${values[0] / 3},${values[1] / 4},${values[2] / 6},${values[3] / 7},${values[4] / 6},${values[5] / 4},,${values[7] / 2},${values[8] / 3},${values[9] / 4},${values[10] / 5},${values[4] / 6},${values[5] / 4},,${values[13] == 2 ? "Yes" : "No"},${values[14] == 12 ? "Yes" : "No"},${values[15] == 6 ? "Yes" : "No"},${totalScore}`;
+
+    const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "MasterSheet.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
 function interpretData() {
     const inputData = document.getElementById("dataInput").value;
@@ -94,66 +171,23 @@ function interpretData() {
     exportToCSV();
 }
 
-function exportToCSV() {
+
+
+function downloadMasterSheet() {
     let csvContent = "data:text/csv;charset=utf-8,";
-
-    const inputData = document.getElementById("dataInput").value;
-    const values = inputData.split(",");
-
-    if (values.length < 23) {
-        alert("Invalid data format.");
-        return;
-    }
-
-    const autonomousPoints = [
-        { value: values[0], points: 3 },
-        { value: values[1], points: 4 },
-        { value: values[2], points: 6 },
-        { value: values[3], points: 7 },
-        { value: values[4], points: 6 },
-        { value: values[5], points: 4 },
-        { value: values[6] == 3 ? 3 : 0, points: 1 }
-    ];
-
-    const teleopPoints = [
-        { value: values[7], points: 2 },
-        { value: values[8], points: 3 },
-        { value: values[9], points: 4 },
-        { value: values[10], points: 5 },
-        { value: values[11], points: 6 },
-        { value: values[12], points: 4 }
-    ];
-
-    const endGamePoints = [
-        { value: values[13] == 2 ? 2 : 0, points: 1 },
-        { value: values[14] == 12 ? 12 : 0, points: 1 },
-        { value: values[15] == 6 ? 6 : 0, points: 1 }
-    ];
-
-    let totalScore = 0;
-    autonomousPoints.forEach(item => totalScore += parseInt(item.value));
-    teleopPoints.forEach(item => totalScore += parseInt(item.value));
-    endGamePoints.forEach(item => totalScore += parseInt(item.value));
-
-    const matchNumber = values[19];
-    const teamNumber = values[20];
-    const allianceColor = values[21] == 0 ? "Red" : "Blue";
-    const matchType = values[22] == "qualification" ? "Qualification" : "Playoffs";
-    const scouterName = values[23];
-
+    
     csvContent += "Scout Data,Name,Match Type,Team,Alliance,Autonomous,Leave,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,Teleoperated,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,End Game,Parked,Deep,Shallow,Total Score\r\n";
-    csvContent += `Match ${matchNumber},${scouterName},${matchType},${teamNumber},${allianceColor},,${values[6] == 3 ? "Yes" : "No"},${values[0] / 3},${values[1] / 4},${values[2] / 6},${values[3] / 7},${values[4] / 6},${values[5] / 4},,${values[7] / 2},${values[8] / 3},${values[9] / 4},${values[10] / 5},${values[4] / 6},${values[5] / 4},,${values[13] == 2 ? "Yes" : "No"},${values[14] == 12 ? "Yes" : "No"},${values[15] == 6 ? "Yes" : "No"},${totalScore}\r\n`;
-
+    
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `Scouter-${scouterName}_${matchType} Match-${matchNumber}_Team- ${teamNumber}_${allianceColor}.csv`);
+    link.setAttribute("download", `MasterSheet.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
 
-// QR code scanning functionality
+
 document.addEventListener('DOMContentLoaded', function () {
     const startScannerButton = document.getElementById('startScannerButton');
     let qrScanner;
@@ -163,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
         this.style.display = 'none';
 
         function onScanSuccess(decodedText, decodedResult) {
-            // Close the scanner after a successful scan
+
             qrScanner.clear();
             document.getElementById('qr-reader').classList.add('hidden');
             console.log(`Code matched = ${decodedText}`, decodedResult);
@@ -171,11 +205,11 @@ document.addEventListener('DOMContentLoaded', function () {
             interpretData();
         }
 
-        // Create an instance of Html5QrcodeScanner with the ID of the HTML element
+
         qrScanner = new Html5QrcodeScanner(
             "qr-reader", { fps: 10, qrbox: 300 });
 
-        // Start scanning
+  
         qrScanner.render(onScanSuccess);
     });
 });
