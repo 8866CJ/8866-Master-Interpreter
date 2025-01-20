@@ -137,6 +137,7 @@ function exportToCSV() {
     const teamNumber = values[20];
     const allianceColor = values[21] == 0 ? "Red" : "Blue";
     const matchType = values[22] == "qualification" ? "Qualification" : "Playoffs";
+    const scouterName = values[23];
 
     // Match details section
     csvContent += "Match Type\r\n";
