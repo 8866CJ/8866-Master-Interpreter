@@ -4,7 +4,7 @@ function interpretData() {
     const inputData = document.getElementById("dataInput").value;
     const values = inputData.split(",");
 
-    if (values.length < 22) { 
+    if (values.length < 23) { 
         document.getElementById("output").innerHTML = "Invalid data format.";
         return;
     }
@@ -49,9 +49,11 @@ function interpretData() {
     const teamNumber = values[20];
     const allianceColor = values[21] == 0 ? "Red" : "Blue";
     const matchType = values[22] == "qualification" ? "Qualification" : "Playoffs";
+    const scouterName = values[23];
 
     const outputText = `
     <div class="section">
+        <p><strong>Scouter Name:</strong> ${scouterName}</p>
         <p><strong>Match Type:</strong> ${matchType}</p>
         <p><strong>Autonomous Phase:</strong></p>
         <p>Coral L1: ${calculateCount(values[0], 3)}</p>
@@ -98,7 +100,7 @@ function exportToCSV() {
     const inputData = document.getElementById("dataInput").value;
     const values = inputData.split(",");
 
-    if (values.length < 22) {
+    if (values.length < 23) {
         alert("Invalid data format.");
         return;
     }
@@ -137,33 +139,36 @@ function exportToCSV() {
     const teamNumber = values[20];
     const allianceColor = values[21] == 0 ? "Red" : "Blue";
     const matchType = values[22] == "qualification" ? "Qualification" : "Playoffs";
+    const scouterName = values[23];
 
     // Match details section
-    csvContent += "Match Type\r\n";
-    csvContent += `${matchType}\r\n`;
-    csvContent += "Match Details\r\n";
-    csvContent += "Won Match,Lost Match,Tied Match,Match Number,Team Number,Alliance Color\r\n";
-    csvContent += `${values[16] == 1 ? "Yes" : "No"},${values[17] == 1 ? "Yes" : "No"},${values[18] == 1 ? "Yes" : "No"},${matchNumber},${teamNumber},${allianceColor}\r\n`;
+    csvContent += "\n,,,,,,,Scouter Name\r\n";
+    csvContent += `,,,,,,,${scouterName}\r\n`;
+    csvContent += "\n,,,,,,,Match Type\r\n";
+    csvContent += `,,,,,,,${matchType}\r\n`;
+    csvContent += "\n,,,,,,,Match Details\r\n";
+    csvContent += ",,Won Match,,Lost Match,,Tied Match,,Match Number,,Team Number,,Alliance Color\r\n";
+    csvContent += `,,${values[16] == 1 ? "Yes" : "No"},,${values[17] == 1 ? "Yes" : "No"},,${values[18] == 1 ? "Yes" : "No"},,${matchNumber},,${teamNumber},,${allianceColor}\r\n`;
 
     // Autonomous phase section
-    csvContent += "Autonomous Phase\r\n";
-    csvContent += "Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,Left During Autonomous\r\n";
-    csvContent += `${values[0]},${values[1]},${values[2]},${values[3]},${values[4]},${values[5]},${values[6] == 3 ? "Yes" : "No"}\r\n`;
+    csvContent += "\n,,,,,,,Autonomous Phase\r\n";
+    csvContent += "\n,Coral L1,,Coral L2,,Coral L3,,Coral L4,,Algae Processor,,Algae Net,,Left During Autonomous\r\n";
+    csvContent += `,${values[0]},,${values[1]},,${values[2]},,${values[3]},,${values[4]},,${values[5]},,${values[6] == 3 ? "Yes" : "No"}\r\n`;
 
     // Teleop phase section
-    csvContent += "Teleop Phase\r\n";
-    csvContent += "Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net\r\n";
-    csvContent += `${values[7]},${values[8]},${values[9]},${values[10]},${values[11]},${values[12]}\r\n`;
+    csvContent += "\n,,,,,,,Teleop Phase\r\n";
+    csvContent += "\n,,Coral L1,,Coral L2,,Coral L3,,Coral L4,,Algae Processor,,Algae Net\r\n";
+    csvContent += `,${values[7]},,${values[8]},,${values[9]},,${values[10]},,${values[11]},,${values[12]}\r\n`;
 
     // End game section
-    csvContent += "End Game\r\n";
-    csvContent += "Parked,Deep,Shallow,Total Score\r\n";
-    csvContent += `${values[13] == 2 ? "Yes" : "No"},${values[14] == 12 ? "Yes" : "No"},${values[15] == 6 ? "Yes" : "No"},${totalScore}\r\n`;
+    csvContent += "\n,,,,,,,End Game\r\n";
+    csvContent += "\n,,,,Parked,,Deep,,Shallow,,Total Score\r\n";
+    csvContent += `,,,,${values[13] == 2 ? "Yes" : "No"},,${values[14] == 12 ? "Yes" : "No"},,${values[15] == 6 ? "Yes" : "No"},,${totalScore}\r\n`;
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${matchType}_Match_${matchNumber}_${teamNumber}_${allianceColor}.csv`);
+    link.setAttribute("download", `Scouter-${scouterName}_${matchType} Match-${matchNumber}_Team- ${teamNumber}_${allianceColor}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
