@@ -19,6 +19,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+function restart() {
+        window.location.reload(); 
+}
+
 function exportToCSV() {
     let csvContent = importedCSVContent.trim();
 
@@ -53,6 +57,7 @@ function exportToCSV() {
         { value: values[13] == 2 ? 2 : 0, points: 1 },
         { value: values[14] == 12 ? 12 : 0, points: 1 },
         { value: values[15] == 6 ? 6 : 0, points: 1 }
+        
     ];
 
     let totalScore = 0;
@@ -65,8 +70,15 @@ function exportToCSV() {
     const allianceColor = values[21] == 0 ? "Red" : "Blue";
     const matchType = values[22] == "qualification" ? "Qualification" : "Playoffs";
     const scouterName = values[23];
+    const driverAbility = values[24];
+    const robotAbility = values[25];
+    const consistentGamePiece = values[26];
+    const rolePlayed = values[27];
+    const comments = values[28];
+
+
     
-    csvContent += `\nMatch ${matchNumber},${scouterName},${matchType},${teamNumber},${allianceColor},,${values[6] == 3 ? "Yes" : "No"},${values[0] / 3},${values[1] / 4},${values[2] / 6},${values[3] / 7},${values[4] / 6},${values[5] / 4},,${values[7] / 2},${values[8] / 3},${values[9] / 4},${values[10] / 5},${values[4] / 6},${values[5] / 4},,${values[13] == 2 ? "Yes" : "No"},${values[14] == 12 ? "Yes" : "No"},${values[15] == 6 ? "Yes" : "No"},${totalScore}`;
+    csvContent += `\nMatch ${matchNumber},${scouterName},${matchType},${teamNumber},${allianceColor},,${values[6] == 3 ? "Yes" : "No"},${values[0] / 3},${values[1] / 4},${values[2] / 6},${values[3] / 7},${values[4] / 6},${values[5] / 4},,${values[7] / 2},${values[8] / 3},${values[9] / 4},${values[10] / 5},${values[4] / 6},${values[5] / 4},,${values[13] == 2 ? "Yes" : "No"},${values[14] == 12 ? "Yes" : "No"},${values[15] == 6 ? "Yes" : "No"},${totalScore},${rolePlayed},${consistentGamePiece},${driverAbility},${robotAbility},${comments}`;
 
     const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
     const link = document.createElement("a");
@@ -127,6 +139,11 @@ function interpretData() {
     const allianceColor = values[21] == 0 ? "Red" : "Blue";
     const matchType = values[22] == "qualification" ? "Qualification" : "Playoffs";
     const scouterName = values[23];
+    const driverAbility = values[24];
+    const robotAbility = values[25];
+    const consistentGamePiece = values[26];
+    const rolePlayed = values[27];
+    const comments = values[28];
 
     const outputText = `
     <div class="section">
@@ -166,6 +183,13 @@ function interpretData() {
         <p>Team Number: ${teamNumber}</p>
         <p>Alliance Color: ${allianceColor}</p>
     </div>
+    <div class="section">
+    <p><strong>Driver Ability: </strong>${values[24]}</p>
+    <p><strong>Robot Ability: </strong>${values[25]}</p>
+    <p><strong>Gamepiece Most Scored: </strong>${values[26]}</p>
+    <p><strong>Role Played: </strong>${values[27]}</p>
+    <p><strong>Comments: </strong>${values[28]}</p>
+    </div>
     `;
     document.getElementById("output").innerHTML = outputText;
     exportToCSV();
@@ -176,7 +200,7 @@ function interpretData() {
 function downloadMasterSheet() {
     let csvContent = "data:text/csv;charset=utf-8,";
     
-    csvContent += "Scout Data,Name,Match Type,Team,Alliance,Autonomous,Leave,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,Teleoperated,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,End Game,Parked,Deep,Shallow,Total Score\r\n";
+    csvContent += "Scout Data,Name,Match Type,Team,Alliance,Autonomous,Leave,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,Teleoperated,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,End Game,Parked,Deep,Shallow,Total Score,Role Played, Gamepiece Most Scored, Driver Ability, Robot Ability, Comments";
     
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
