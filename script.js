@@ -144,6 +144,9 @@ function interpretData() {
     const consistentGamePiece = values[26];
     const rolePlayed = values[27];
     const comments = values[28];
+    const allianceScore = values[29];
+    const deadRobot = values[30];
+    const brokenRobot = values[31] == "1" ? "Yes" : "No";
 
     const outputText = `
     <div class="section">
@@ -173,6 +176,7 @@ function interpretData() {
         <p>Deep: ${values[14] == 12 ? "Yes" : "No"}</p>
         <p>Shallow: ${values[15] == 6 ? "Yes" : "No"}</p>
         <p><strong>Total Score:</strong> ${totalScore} points</p>
+        <p><strong>Alliance Score:</strong> ${allianceScore} points</p>
     </div>
     <div class="section">
         <p><strong>Match Details:</strong></p>
@@ -189,6 +193,10 @@ function interpretData() {
     <p><strong>Gamepiece Most Scored: </strong>${values[26]}</p>
     <p><strong>Role Played: </strong>${values[27]}</p>
     <p><strong>Comments: </strong>${values[28]}</p>
+    <p><strong>Did Robot Die?: </strong>${deadRobot} </p>
+    <p><strong>Robot Died: </strong>${values[32]} Time(s)</p>
+    <p><strong>Did Robot Break?: </strong>${brokenRobot} </p>
+    <p><strong>Robot Broke: </strong>${values[33]} Time(s)</p>
     </div>
     `;
     document.getElementById("output").innerHTML = outputText;
