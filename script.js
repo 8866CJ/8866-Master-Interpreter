@@ -86,11 +86,14 @@ function exportToCSV() {
     const brokenRobot = values[31] == "1" ? "Yes" : "No";
     const missedAutoPieces = values[32];
     const missedTeleopPieces = values[33];
-
+    const cycleTimes = values[34];
+    
+    const averageCycleTime = calculateAverageCycleTime(cycleTimes);
+    const scoreContribution = calculateScoreContribution(allianceScore, totalScore);
     const autonomousPercentage = calculateAutonomousPercentage(values, missedAutoPieces);
     const teleopPercentage = calculateTeleopPercentage(values, missedTeleopPieces);
     
-    csvContent += `\nMatch ${matchNumber},${scouterName},${matchType},${teamNumber},${allianceColor},,${values[6] == 3 ? "Yes" : "No"},${values[0] / 3},${values[1] / 4},${values[2] / 6},${values[3] / 7},${values[4] / 6},${values[5] / 4},${autonomousPercentage.toFixed(2)}%,,${values[7] / 2},${values[8] / 3},${values[9] / 4},${values[10] / 5},${values[4] / 6},${values[5] / 4},${teleopPercentage.toFixed(2)}%,,${values[13] == 2 ? "Yes" : "No"},${values[14] == 12 ? "Yes" : "No"},${values[15] == 6 ? "Yes" : "No"},${totalScore},${allianceScore},${rolePlayed},${consistentGamePiece},${driverAbility},${robotAbility},${deadRobot},${brokenRobot},${comments}`;
+    csvContent += `\nMatch ${matchNumber},${scouterName},${matchType},${teamNumber},${allianceColor},,${values[6] == 3 ? "Yes" : "No"},${values[0] / 3},${values[1] / 4},${values[2] / 6},${values[3] / 7},${values[4] / 6},${values[5] / 4},${autonomousPercentage.toFixed(2)}%,,${values[7] / 2},${values[8] / 3},${values[9] / 4},${values[10] / 5},${values[4] / 6},${values[5] / 4},${teleopPercentage.toFixed(2)}%,,${values[13] == 2 ? "Yes" : "No"},${values[14] == 12 ? "Yes" : "No"},${values[15] == 6 ? "Yes" : "No"},${totalScore},${allianceScore},${scoreContribution.toFixed(2)}%,${rolePlayed},${averageCycleTime.toFixed(2)},${consistentGamePiece},${driverAbility},${robotAbility},${deadRobot},${brokenRobot},${comments}`;
 
     const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
     const link = document.createElement("a");
@@ -110,7 +113,7 @@ function calculateAutonomousPercentage(values, missedAutoPieces) {
         { value: parseInt(values[4]), points: 6 },
         { value: parseInt(values[5]), points: 4 }
     ];
-
+    console.log(`Missed Auto Pieces:${missedAutoPieces}`)
     const totalMadePieces = autonomousPoints.reduce((acc, item) => acc + (item.value / item.points), 0);
     const totalPieces = totalMadePieces + parseInt(missedAutoPieces);
 
@@ -130,7 +133,7 @@ function calculateTeleopPercentage(values, missedTeleopPieces) {
         { value: parseInt(values[11]), points: 6 },
         { value: parseInt(values[12]), points: 4 }
     ];
-
+    console.log(`Missed Teleop Pieces:${missedTeleopPieces}`)
     const totalMadePieces = teleopPoints.reduce((acc, item) => acc + (item.value / item.points), 0);
     const totalPieces = totalMadePieces + parseInt(missedTeleopPieces);
 
@@ -139,6 +142,19 @@ function calculateTeleopPercentage(values, missedTeleopPieces) {
     }
 
     return (totalMadePieces / totalPieces) * 100;
+}
+
+function calculateScoreContribution(allianceScore, totalScore) {
+    if (totalScore === 0) {
+        return 0;
+    }
+    return (totalScore / allianceScore) * 100;
+}
+
+function calculateAverageCycleTime(cycleTimes) {
+    const times = cycleTimes.split("+").map(time => parseFloat(time));
+    const total = times.reduce((acc, time) => acc + time, 0);
+    return total / times.length;
 }
 
 function interpretData() {
@@ -197,11 +213,14 @@ function interpretData() {
     const rolePlayed = values[27];
     const comments = values[28];
     const allianceScore = values[29];
-    const deadRobot = values[30];
+    const deadRobot = values[30] == "1" ? "Yes" : "No";
     const brokenRobot = values[31] == "1" ? "Yes" : "No";
-    const missedAutoPieces = values[32];
-    const missedTeleopPieces = values[33];
+    const missedAutoPieces = values[34];
+    const missedTeleopPieces = values[35];
+    const cycleTimes = values[36];
 
+    const averageCycleTime = calculateAverageCycleTime(cycleTimes);
+    const scoreContribution = calculateScoreContribution(allianceScore, totalScore);
     const autonomousPercentage = calculateAutonomousPercentage(values, missedAutoPieces);
     const teleopPercentage = calculateTeleopPercentage(values, missedTeleopPieces);
 
@@ -236,6 +255,7 @@ function interpretData() {
         <p>Shallow: ${values[15] == 6 ? "Yes" : "No"}</p>
         <p><strong>Total Score:</strong> ${totalScore} points</p>
         <p><strong>Alliance Score:</strong> ${allianceScore} points</p>
+        <p><strong>Score Contribution:</strong> ${scoreContribution.toFixed(2)}%</p>
     </div>
     <div class="section">
         <p><strong>Match Details:</strong></p>
@@ -247,6 +267,7 @@ function interpretData() {
         <p>Alliance Color: ${allianceColor}</p>
         <p><strong>Gamepiece Most Scored: </strong>${values[26]}</p>
         <p><strong>Role Played: </strong>${values[27]}</p>
+        <p><strong>Average Cycle Time: </strong>${averageCycleTime.toFixed(2)} seconds</p>
         <p><strong>Comments: </strong>${values[28]}</p>
         <p><strong>Did Robot Die?: </strong>${deadRobot} </p>
         <p><strong>Robot Died: </strong>${values[32]} Time(s)</p>
@@ -263,7 +284,7 @@ function interpretData() {
 function downloadMasterSheet() {
     let csvContent = "data:text/csv;charset=utf-8,";
     
-    csvContent += "Scout Data,Name,Match Type,Team,Alliance,Autonomous,Leave,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,Scoring Consistency Auto,Teleoperated,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,Scoring Consistency Teleop,End Game,Parked,Deep,Shallow,Total Score,Alliance Score,Role Played, Gamepiece Most Scored, Driver Ability, Robot Ability,Times Robot Died, Times Robot Broke, Comments";
+    csvContent += "Scout Data,Name,Match Type,Team,Alliance,Autonomous,Leave,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,Scoring Consistency Auto,Teleoperated,Coral L1,Coral L2,Coral L3,Coral L4,Algae Processor,Algae Net,Scoring Consistency Teleop,End Game,Parked,Deep,Shallow,Total Score,Alliance Score,Score Contribution,Role Played,Average Cycle Time, Gamepiece Most Scored, Driver Ability, Robot Ability,Times Robot Died, Times Robot Broke, Comments";
     
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
